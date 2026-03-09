@@ -13,6 +13,36 @@ interface HeroProps {
   };
 }
 
+interface HeroEventCardContentProps {
+  date: string;
+  title: string;
+  registrationUrl: string;
+}
+
+function HeroEventCardContent({
+  date,
+  title,
+  registrationUrl,
+}: HeroEventCardContentProps) {
+  return (
+    <CardContent className="p-4">
+      <div className="flex items-center gap-2 text-sm text-white/70 mb-2">
+        <Calendar className="h-4 w-4" />
+        <span>{date}</span>
+      </div>
+      <h3 className="font-heading text-lg font-semibold mb-3 text-white">
+        {title}
+      </h3>
+      <Button asChild className="w-full">
+        <Link href={registrationUrl}>
+          S&apos;inscrire
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
+      </Button>
+    </CardContent>
+  );
+}
+
 export function Hero({ nextEvent }: HeroProps) {
   return (
     <section className="relative min-h-[80vh] h-auto overflow-hidden flex items-center">
@@ -75,21 +105,11 @@ export function Hero({ nextEvent }: HeroProps) {
                     priority
                   />
                 </div>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-white/70 mb-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>{nextEvent.date}</span>
-                  </div>
-                  <h3 className="font-heading text-lg font-semibold mb-3 text-white">
-                    {nextEvent.title}
-                  </h3>
-                  <Button asChild className="w-full">
-                    <Link href={nextEvent.registrationUrl}>
-                      S&apos;inscrire
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </CardContent>
+                <HeroEventCardContent
+                  date={nextEvent.date}
+                  title={nextEvent.title}
+                  registrationUrl={nextEvent.registrationUrl}
+                />
               </Card>
             </div>
           )}
