@@ -1,17 +1,19 @@
 import Link from "next/link";
-import { ArrowRight, Calendar } from "lucide-react";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 
 export interface EventCardContentProps {
   date: string;
   title: string;
+  location?: string;
   registrationUrl: string;
 }
 
 export function EventCardContent({
   date,
   title,
+  location,
   registrationUrl,
 }: EventCardContentProps) {
   return (
@@ -20,6 +22,12 @@ export function EventCardContent({
         <Calendar className="h-4 w-4" />
         <span>{date}</span>
       </div>
+      {location && (
+        <div className="flex items-center gap-2 text-sm text-white/70 mb-2">
+          <MapPin className="h-4 w-4" />
+          <span>{location}</span>
+        </div>
+      )}
       <h3 className="font-heading text-lg font-semibold mb-3 text-white">
         {title}
       </h3>

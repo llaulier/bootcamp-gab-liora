@@ -10,6 +10,7 @@ interface HeroProps {
   nextEvent?: {
     title: string;
     date: string;
+    location?: string;
     registrationUrl: string;
   };
 }
@@ -79,6 +80,7 @@ export function Hero({ nextEvent }: HeroProps) {
                 <EventCardContent
                   date={nextEvent.date}
                   title={nextEvent.title}
+                  location={nextEvent.location}
                   registrationUrl={nextEvent.registrationUrl}
                 />
               </Card>
