@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { Calendar, Play } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import { EventCard } from "@/components/events/event-card";
+import { EventFilters } from "@/components/events/event-filters";
+import { getEvents } from "@/lib/supabase/events";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -8,10 +13,21 @@ export const metadata: Metadata = {
     "Meetups, webinars et workshops GenAI. Rejoins la communaute GAB.",
 };
 
-export default function EventsPage() {
+interface EventsPageProps {
+  searchParams: Promise<{ city?: string; type?: string; period?: string }>;
+}
+
+export default async function EventsPage({ searchParams }: EventsPageProps) {
+  const { city, type, period } = await searchParams;
+
+  const [allEvents, filtered] = await Promise.all([
+    getEvents(),
+    getEvents({ city, type, period }),
+  ]);
+
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="max-w-3xl mb-12">
+      <div className="max-w-3xl mb-10">
         <h1 className="font-heading text-3xl font-bold mb-4">Events</h1>
         <p className="text-lg text-muted-foreground">
           Meetups, webinars et workshops avec des experts GenAI. Participe en
@@ -19,34 +35,27 @@ export default function EventsPage() {
         </p>
       </div>
 
-      {/* Upcoming Events */}
-      <section className="mb-16">
-        <h2 className="font-heading text-xl font-semibold mb-6 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-primary" />
-          Prochains events
-        </h2>
-        <div className="rounded-lg border border-border/50 p-8 text-center">
+      <Suspense>
+        <EventFilters allEvents={allEvents} />
+      </Suspense>
+
+      {filtered.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border/50 p-12 text-center">
           <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground mb-4">
-            Aucun event programme pour le moment.
+            Aucun event ne correspond à ces filtres.
           </p>
-          <Button variant="outline">Recevoir les annonces</Button>
+          <Button asChild variant="outline">
+            <Link href="/events">Réinitialiser les filtres</Link>
+          </Button>
         </div>
-      </section>
-
-      {/* Past Events / Replays */}
-      <section>
-        <h2 className="font-heading text-xl font-semibold mb-6 flex items-center gap-2">
-          <Play className="h-5 w-5 text-primary" />
-          Replays disponibles
-        </h2>
-        <div className="rounded-lg border border-border/50 p-8 text-center">
-          <Play className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            Les replays arrivent bientot. Reste connecte!
-          </p>
-        </div>
-      </section>
+      )}
     </div>
   );
 }
