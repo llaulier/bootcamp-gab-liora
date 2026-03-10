@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Event } from "@/lib/types/content";
 
-const CITY_CONFIG = {
+type CityToken = { label: string; bg: string; text: string };
+const CITY_CONFIG: Record<NonNullable<Event["city"]>, CityToken> = {
   lille: { label: "Lille", bg: "#14532d", text: "#86efac" },
   paris: { label: "Paris", bg: "#1e3a5f", text: "#93c5fd" },
   lyon: { label: "Lyon", bg: "#7f1d1d", text: "#fca5a5" },
@@ -14,9 +15,9 @@ const CITY_CONFIG = {
   bruxelles: { label: "Bruxelles", bg: "#713f12", text: "#fde68a" },
   londres: { label: "Londres", bg: "#1e293b", text: "#94a3b8" },
   remote: { label: "Remote", bg: "#581c87", text: "#d8b4fe" },
-} as const;
+};
 
-const CITY_GROUPS: { label: string; cities: (keyof typeof CITY_CONFIG)[] }[] = [
+const CITY_GROUPS: { label: string; cities: NonNullable<Event["city"]>[] }[] = [
   { label: "France", cities: ["lille", "paris", "lyon", "bordeaux", "nantes"] },
   { label: "International", cities: ["bruxelles", "londres"] },
   { label: "Remote", cities: ["remote"] },
@@ -68,8 +69,8 @@ export function EventFilters({ allEvents }: EventFiltersProps) {
   }
 
   const availableCities = Array.from(
-    new Set(allEvents.map((e) => e.city).filter(Boolean))
-  ) as (keyof typeof CITY_CONFIG)[];
+    new Set(allEvents.map((e) => e.city).filter((c): c is NonNullable<Event["city"]> => c !== null))
+  );
 
   const availableTypes = Array.from(
     new Set(allEvents.map((e) => e.event_type))
@@ -91,7 +92,7 @@ export function EventFilters({ allEvents }: EventFiltersProps) {
           <span className="text-sm text-muted-foreground w-16 shrink-0 pt-1">Ville</span>
           <div className="flex flex-col gap-3">
             {CITY_GROUPS.map((group) => {
-              const groupCities = group.cities.filter((c) => availableCities.includes(c as typeof availableCities[number]));
+              const groupCities = group.cities.filter((c) => availableCities.includes(c));
               if (groupCities.length === 0) return null;
               return (
                 <div key={group.label}>
