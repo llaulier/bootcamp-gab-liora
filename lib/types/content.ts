@@ -33,11 +33,12 @@ export interface Event {
   event_date: string
   event_end_date: string | null
   location: string | null
+  city: "lille" | "paris" | "lyon" | "bordeaux" | "nantes" | "bruxelles" | "londres" | "remote" | null
   image_url: string | null
   registration_url: string | null
   replay_url: string | null
   is_past: boolean
-  event_type: "meetup" | "webinar" | "workshop" | "conference"
+  event_type: "meetup" | "webinar" | "workshop" | "conference" | "hackathon" | "demo-day" | "formation"
   capacity: number | null
   published: boolean
   created_at: string
