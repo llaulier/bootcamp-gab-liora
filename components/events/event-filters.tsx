@@ -23,7 +23,7 @@ const CITY_GROUPS: { label: string; cities: NonNullable<Event["city"]>[] }[] = [
   { label: "Remote", cities: ["remote"] },
 ];
 
-const TYPE_LABELS: Record<string, string> = {
+const TYPE_LABELS: Record<Event["event_type"], string> = {
   meetup: "Meetup",
   webinar: "Webinar",
   workshop: "Workshop",
@@ -142,7 +142,7 @@ export function EventFilters({ allEvents }: EventFiltersProps) {
                       : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground"
                   )}
                 >
-                  {TYPE_LABELS[type] ?? type}
+                  {TYPE_LABELS[type]}
                   <span className="text-xs opacity-75">({countByType(type)})</span>
                 </button>
               );
